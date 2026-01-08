@@ -12,10 +12,22 @@ const app = express();
 connectDB();
 
 // Middleware
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',')
+  : (process.env.NODE_ENV === 'production'
+    ? ['https://daawat-e-ishq-frontend.vercel.app']
+    : ['http://localhost:3000']);
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-production-domain.com'] 
-    : ['http://localhost:3000'],
+  origin: function(origin, callback){
+    // Allow requests with no origin (like mobile apps or curl)
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) !== -1){
+      return callback(null, true);
+    } else {
+      return callback(new Error('CORS policy: This origin is not allowed'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
