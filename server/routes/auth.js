@@ -30,6 +30,11 @@ router.post('/register', errorHandler(registerUser));
 router.post('/login', errorHandler(loginUser));
 router.post('/google', errorHandler(googleAuth));
 router.post('/facebook', errorHandler(facebookAuth));
+router.post('/facebook/delete-callback', (req, res) => {
+  // Handle Facebook data deletion request
+  // Log the deletion or remove user data
+  res.status(200).json({ url: req.body.url });
+});
 router.get('/me', authMiddleware, errorHandler(getCurrentUser));
 router.post('/register-admin', authMiddleware, errorHandler(registerAdmin));
 router.put('/update-profile', authMiddleware, errorHandler(updateProfile));
